@@ -1,10 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 const FormDetail = () => {
-  const [res,setRes]=useState([])
+  const [res, setRes] = useState({});
   const [data, setData] = useState([]);
   const [currForm, setCurrForm] = useState(null); // Use null instead of []
-  const param=useParams();
+  const param = useParams();
+
+  // Generate a unique response ID (for example, "RES005")
+  const generateResponseId = () =>
+    `RES${Math.floor(1000 + Math.random() * 9000)}`;
+
+  // Handle text input change
+  const handleChange = (id, value) => {
+    setRes((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+    console.log(res);
+  };
+  // Handle form submission
+  const handleSubmit = async () => {
+    console.log("response:", res);
+    // You can send formData to an API or process it further
+    const submissionData = {
+      id: generateResponseId(), // Unique response ID
+      ...res, // Spread responses directly
+      formId: currForm.id, // Include form ID
+    };
+    try {
+      const response = await fetch("http://localhost:3031/responses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submissionData),
+      });
+      if (response.ok) {
+        alert("Form submitted successfully!");
+        setRes((prev) => {
+          const clearedResponses = {};
+          Object.keys(prev).forEach((key) => {
+            clearedResponses[key] = ""; // Clear inputs after submission
+          });
+          return clearedResponses;
+        });
+      } else {
+        alert("Error submitting form.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +84,9 @@ const FormDetail = () => {
                     placeholder={field.placeholder}
                     maxLength={parseInt(field.charLimit)} // Ensure it's a number
                     className="w-full p-2 border border-gray-300 rounded"
-                    onChange={(e)=>{}}
+                    onChange={(e) =>
+                      handleChange(field.placeholder, e.target.value)
+                    }
                   />
                 )}
 
@@ -55,6 +101,9 @@ const FormDetail = () => {
                           name={`radio-${fieldIndex}`}
                           value={option}
                           className="mr-2"
+                          onChange={(e) =>
+                            handleChange(field.placeholder, e.target.value)
+                          }
                         />
                         {option}
                       </label>
@@ -64,8 +113,13 @@ const FormDetail = () => {
               </div>
             ))}
 
-            {/*Submit button  */}
-            <button className="bg-green-500 px-5 py-3 rounded-lg text-white hover:bg-green-400">Submit</button>
+          {/*Submit button  */}
+          <button
+            className="bg-green-500 px-5 py-3 rounded-lg text-white hover:bg-green-400"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
         </div>
       ) : (
         <p>Loading...</p>
