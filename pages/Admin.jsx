@@ -1,8 +1,18 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { addField } from "../src/redux/slice/formSlice";
+import CloseIcon from '@mui/icons-material/Close';
+
+
 const Admin = () => {
   const fieldType = useSelector((state) => state.form.fieldType);
+
+  //we will use this to map the form item
+  const [formItems, setFormItems] = useState([]);
+
+  const [draggedItem, setDraggedItem] = useState(null);
+  
   const types = [
     {
       type: "text",
@@ -26,7 +36,46 @@ const Admin = () => {
     },
   ];
   const dispatch = useDispatch();
+
   console.log("fieldType", fieldType);
+  
+
+//code for adding field
+const handleAddField = () => {
+  if(fieldType){
+    setFormItems([...formItems,
+      {type:fieldType,
+        label:"",
+        placeholder:"",
+      }])
+    console.log("form items",formItems)
+  }
+
+}
+
+// deleting item
+
+const deleteItem=(index)=>{
+console.log("deleting item at index ", index)
+setFormItems(formItems.filter((_,i)=>i!=index))
+}
+
+
+  // code for handeling drop functionality
+  const handleDragStart = (index) => {
+    setDraggedItem(index);
+  };
+
+  const handleDrop = (index) => {
+    if (draggedItem !== null) {
+      const newItems = [...formItems];
+      const [movedItem] = newItems.splice(draggedItem, 1);
+      newItems.splice(index, 0, movedItem);
+      setFormItems(newItems);
+      setDraggedItem(null);
+    }
+  };
+
 
   return (
     <div className="h-screen">
@@ -56,7 +105,7 @@ const Admin = () => {
         </div>
 
         {/* middle panel  */}
-        <div className=" w-3/5 flex flex-col justify-start m-2 rounded-sm outline-1 outline-dashed">
+        <div className=" w-3/5 flex flex-col justify-start m-2 rounded-sm outline-1 outline-dashed overflow-y-scroll">
           <div
             className="bg-[#f9f9f9] w-full flex flex-col justify-startrounded-xl h-fit p-4 mb-5"
             draggable="true"
@@ -69,12 +118,52 @@ const Admin = () => {
               className="px-1 h-7 w-full bg-white mt-1 rounded-sm"
             />
           </div>
-          <div className="bg-[#f9f9f9] w-full flex flex-col justify-startrounded-xl h-fit p-4 mb-5">
+          {/* <div className="bg-[#f9f9f9] w-full flex flex-col justify-startrounded-xl h-fit p-4 mb-5">
             <label className="font-semibold">Your Name</label>
             <input
               type="text"
               className="px-1 h-7 w-full bg-white mt-1 rounded-sm"
             />
+          </div> */}
+
+          <div
+            style={{
+              width:"100%",
+            }}
+          >
+            {formItems.map((formItem, index) => (
+              <div
+                key={index}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(index)}
+                style={{
+                  padding: " 0px 10px 20px 10px",
+                  marginTop:"10px",
+                  backgroundColor:"#f9f9f9",
+                  cursor: "move",
+                  position:"relative"
+                }}
+              >
+                
+                <br />
+                <label className="font-semibold">{formItem.type}</label>
+                {index}
+                <button className="absolute right-1.5 text-white bg-red-400 rounded-sm p-0.5 top-2"           
+
+
+                //deleting function
+                onClick={()=>deleteItem(index)}
+                 ><CloseIcon/></button>
+
+
+            <input
+              type="text"
+              className="px-1 h-7 w-full bg-white mt-1 rounded-sm"
+            />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -137,6 +226,10 @@ const Admin = () => {
               />
             </div>
           ) : null}
+
+          <button className="bg-green-300 text-white hover:bg-green-400" onClick={handleAddField}>
+            Add field
+          </button>
         </div>
       </div>
     </div>
