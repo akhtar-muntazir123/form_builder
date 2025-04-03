@@ -77,8 +77,23 @@ const FormDetail = () => {
           {currForm.fields &&
             currForm.fields.map((field, fieldIndex) => (
               <div key={fieldIndex} className="mb-4">
+
+
                 {/* Text Input */}
-                {field.type === "text" && (
+                {field.type === "text" && (<>
+                  <input
+                    type="text"
+                    placeholder={field.placeholder}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    onChange={(e) =>
+                      handleChange(field.placeholder, e.target.value)
+                    }
+                  />
+                </>
+                 
+                )}
+                {/* Number Input */}
+                {field.type === "number" && (<>
                   <input
                     type="text"
                     placeholder={field.placeholder}
@@ -88,6 +103,22 @@ const FormDetail = () => {
                       handleChange(field.placeholder, e.target.value)
                     }
                   />
+                </>
+                 
+                )}
+
+                {/* Date Input */}
+                {field.type === "date" && (<>
+                  <input
+                    type="date"
+                    placeholder={field.placeholder}
+                    className="w-1/5 p-2 border border-gray-300 rounded"
+                    onChange={(e) =>
+                      handleChange(field.placeholder, e.target.value)
+                    }
+                  />
+                </>
+                 
                 )}
 
                 {/* Radio Input */}
