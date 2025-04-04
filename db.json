@@ -97,6 +97,32 @@
           "label": "JCALKC"
         }
       ]
+    },
+    {
+      "id": "F4300",
+      "name": "STUDENT",
+      "fields": [
+        {
+          "type": "text",
+          "label": "Name",
+          "placeholder": "Please enter name"
+        },
+        {
+          "type": "radio",
+          "label": "Gender",
+          "radioOptions": [
+            "male",
+            "female",
+            "",
+            ""
+          ]
+        },
+        {
+          "type": "number",
+          "label": "Phone number",
+          "placeholder": "enter your number"
+        }
+      ]
     }
   ],
   "responses": [
@@ -164,6 +190,13 @@
       "id": "RES5712",
       "undefined": "NKJNCAK",
       "formId": "F7475"
+    },
+    {
+      "id": "RES9248",
+      "Please enter name": "ABC",
+      "undefined": "male",
+      "enter your number": "878988888888",
+      "formId": "F4300"
     }
   ]
 }

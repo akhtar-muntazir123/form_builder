@@ -3,6 +3,13 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
+  theme: {
+    extend: {
+      fontFamily: {
+        fangsong: ['fangsong', 'serif'], // add serif as fallback
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss()
